@@ -11,12 +11,12 @@ The following are the critical instructions that twilio has you do when doing th
 Next you should update some file paths to represent your desired folder structure on your computer. Open storage.py and change "saveBasePath" to point to a folder where you want user's data to be saved. 
 
 Then open "sender.py" and change the filename to a location where you are going to want to save some configuration information. To create the configuration information file, open a python shell and type in the following:
->> import pickle
->> filename = "/path/to/config/file.pickle"
->> secretInfo = "account_sid": 'getFromTwilio', "auth_token": 'getFromTwilio', "twilioPhoneNumber": 'getFromTwilio'}
->> fp = open(filename, "wb")
->> pickle.dump(secretInfo, fp, 2)
->> fp.close()
+ import pickle
+ filename = "/path/to/config/file.pickle"
+ secretInfo = "account_sid": 'getFromTwilio', "auth_token": 'getFromTwilio', "twilioPhoneNumber": 'getFromTwilio'}
+ fp = open(filename, "wb")
+ pickle.dump(secretInfo, fp, 2)
+ fp.close()
 
 RUN:
 You should now be ready to run. You can do this by running twilioReceiver.py in one terminal. And run "./ngrok http 5000" in another terminal.
