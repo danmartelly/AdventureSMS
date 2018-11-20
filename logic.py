@@ -1,22 +1,27 @@
+import unittest
 import storage
 import story
 import sender
+
+def getNextStateAndMessage(userData, userMessage):
+    userStory = story.loadStory(userData.storyName, userData.state)
+    serverMessage = userStory.transitionGivenUserMessage(userMessage)
+    return (userStory.currentState, serverMessage)
 
 def updateUser(userData):
     # check if last message is from the server
     if userData.getLastSender() != "user":
         return
-    userStory = story.JokeStory(userData.state)
     userMessage = userData.getLastMessage()
-    serverMessage = userStory.transitionGivenUserMessage(userMessage)
-    fp = open("/home/pi/Documents/AdventureSMS/log.txt", "a")
-    fp.write("userMessage: " + userMessage)
-    fp.write(" serverMessage: " + serverMessage + "\n")
-    fp.close()
+    (newState, serverMessage) = getNextStateAndMessage(userData, userMessage)
     if serverMessage == None:
         return
     # send and save message
     sender.sendSMS(userData.phoneNumber, serverMessage)
     userData.addServerMessage(serverMessage)
-    userData.state = userStory.currentState
+    userData.state = newState
     storage.saveUserData(userData)
+
+class TestLogic(unittest.TestCase):
+    def test_Next():
+        pass

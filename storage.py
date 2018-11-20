@@ -11,6 +11,7 @@ class UserData:
         self.phoneNumber = phoneNumber
         self.messageData = []
         self.state = None
+        self.storyName = "TeenageLoveStory"
 
     def addServerMessage(self, msg, timestamp=None):
         self.messageData.append({"sender":"server", "message":msg})

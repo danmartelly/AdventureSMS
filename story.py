@@ -60,6 +60,35 @@ class JokeStory(SMSStory):
             (nextState, serverMessage) = (0, "huh?")
         return (nextState, serverMessage)
 
+class TeenageLoveStory(SMSStory):
+    def __init__(self, currentState=None):
+        super().__init__(currentState)
+        self.stateTransitions = {
+            None: lambda x: ("beginning", "I'm going to do it!"),
+            "beginning": self._beginning,
+            "tell her": lambda x: (None, "That's the end of the story!")
+        }
+
+    def _beginning(self, message):
+        message = message.lower()
+        if self._messageContainsAllOf(message, ["old are you"]):
+            (nextState, serverMessage) = ("beginning", "13")
+        elif self._messageContainsOneOf(message, ["who"]):
+            (nextState, serverMessage) = ("beginning", "This is Angelica")
+        elif self._messageContainsAllOf(message, ["what", "tell"]):
+            (nextState, serverMessage) = ("tell her", "That I'm in love with her")
+        elif self._messageContainsOneOf(message, ["what"]):
+            (nextState, serverMessage) = ("beginning", "I'm going to tell her")
+        else:
+            (nextState, serverMessage) = ("beginning", "I'm definitely going to do it!")
+        return (nextState, serverMessage)
+
+def loadStory(storyName, startState=None):
+    className = eval(storyName)
+    story = className(startState)
+    return story
+    
+
 ###### TESTS #####
 
 class TestBaseStory(unittest.TestCase):
@@ -90,6 +119,16 @@ class TestJokeStory(unittest.TestCase):
         userMessage = "Eats shoots and leaves. Eats, shoots, and leaves"
         serverMessage = story.transitionGivenUserMessage(userMessage)
         self.assertEqual(serverMessage, "Yeah that's right! One eats shoots and leaves; the other eats, shoots, and leaves. :)")
+
+class TestLoveStory(unittest.TestCase):
+    def test_itAll(self):
+        story = TeenageLoveStory()
+        userMessage = "blah"
+        serverMessage = story.transitionGivenUserMessage(userMessage)
+        self.assertEqual(story.currentState, "beginning")
+        userMessage = "do what?"
+        serverMessage = story.transitionGivenUserMessage(userMessage)
+        self.assertEqual(story.currentState, "beginning")
         
 if __name__ == "__main__":
     unittest.main()        
